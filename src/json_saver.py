@@ -6,6 +6,8 @@ from src.saver import Saver
 class JSONSaver(Saver):
     """Класс для записи в json-файл"""
 
+    filename = "data/vacancies.json"
+
     def __init__(self, filename):
         """Конструктор класса"""
 

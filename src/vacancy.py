@@ -1,9 +1,20 @@
-class Vacancy:
+from pydantic import BaseModel, ValidationError
+
+
+class Vacancy(BaseModel):
     """Класс для работы с вакансиями"""
 
     __slots__ = ("name", "alternate_url", "salary_from", "salary_to", "area_name", "requirement", "responsibility")
 
-    def __init__(self, name, alternate_url, salary_from, salary_to, area_name, requirement, responsibility):
+    def __init__(
+        self,
+        name,
+        alternate_url,
+        salary_from,
+        salary_to,
+        area_name,
+        requirement,
+    ):
         """Конструктор класса"""
 
         self.name: str = name
@@ -12,7 +23,30 @@ class Vacancy:
         self.salary_to: int = salary_to
         self.area_name: str = area_name
         self.requirement: str = requirement
-        self.responsibility: str = responsibility
+
+        try:
+            vacancy_data = {
+                "name": "Тестировщик",
+                "alternate_url": "https://api.hh.ru/areas/26",
+                salary_from: 1234,
+                salary_to: 34278,
+                "area_name": "QA Тестировщик",
+                requirement: "3+ лет опыта работы в области QA",
+            }
+            vacancy = Vacancy(**vacancy_data)
+            print("Валидация прошла успешно:", vacancy)
+
+            invalid_vacancy_data = {
+                "name": 123,
+                "alternate_url": 4465,
+                salary_from: "по результатам собесдоания",
+                salary_to: "по результатам собесдоания",
+                "area_name": 5464664,
+                requirement: 354446,
+            }
+            invalid_vacancy = Vacancy(**invalid_vacancy_data)
+        except ValidationError as e:
+            print("Ошибка валидации:", e)
 
     def __str__(self) -> str:
         """Строковое представление вакансии"""
@@ -23,7 +57,6 @@ class Vacancy:
             f"Зарплата: от {self.salary_from} до {self.salary_to}\n"
             f"Место работы: {self.area_name}\n"
             f"Краткое описание: {self.requirement}\n"
-            f"{self.responsibility}\n"
         )
 
     def __lt__(self, other) -> bool:
@@ -44,7 +77,6 @@ class Vacancy:
             salary.get("to") if salary.get("to") else 0,
             vacancy_data["area"]["name"],
             vacancy_data["snippet"]["requirement"],
-            vacancy_data["snippet"]["responsibility"],
         )
 
     def to_dict(self) -> dict:
@@ -57,5 +89,4 @@ class Vacancy:
             "salary_to": self.salary_to,
             "area_name": self.area_name,
             "requirement": self.requirement,
-            "responsibility": self.responsibility,
         }
