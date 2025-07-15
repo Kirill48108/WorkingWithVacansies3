@@ -1,3 +1,6 @@
+from src.vacancy import Vacancy
+
+
 def test_vacancy_init(vacancy):
     """Тесты конструктора класса"""
 
@@ -7,7 +10,6 @@ def test_vacancy_init(vacancy):
     assert vacancy.salary_to == 7_000_000
     assert vacancy.area_name == "Ташкент"
     assert vacancy.requirement == "Опыт работы в продажах обязателен"
-    assert vacancy.responsibility == "Консультирование клиентов"
 
 
 def test_vacancy_str(vacancy):
@@ -19,7 +21,6 @@ def test_vacancy_str(vacancy):
         "Зарплата: от 4000000 до 7000000\n"
         "Место работы: Ташкент\n"
         "Краткое описание: Опыт работы в продажах обязателен\n"
-        "Консультирование клиентов\n"
     )
 
 
@@ -40,7 +41,6 @@ def test_vacancy_from_hh_dict(vacancy):
         "Зарплата: от 4000000 до 7000000,"
         "Место работы: Ташкент,"
         "Краткое описание: Опыт работы в продажах обязателен,"
-        "Консультирование клиентов,"
     )
 
 
@@ -54,5 +54,4 @@ def test_vacancy_to_dict(vacancy):
         "salary_to": 7000000,
         "area_name": "Ташкент",
         "requirement": "Опыт работы в продажах обязателен",
-        "responsibility": "Консультирование клиентов",
     }

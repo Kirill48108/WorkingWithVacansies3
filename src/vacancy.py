@@ -1,10 +1,14 @@
-from pydantic import BaseModel, ValidationError
-
-
-class Vacancy(BaseModel):
+class Vacancy:
     """Класс для работы с вакансиями"""
 
-    __slots__ = ("name", "alternate_url", "salary_from", "salary_to", "area_name", "requirement", "responsibility")
+    __slots__ = (
+        "name",
+        "alternate_url",
+        "salary_from",
+        "salary_to",
+        "area_name",
+        "requirement",
+    )
 
     def __init__(
         self,
@@ -24,30 +28,6 @@ class Vacancy(BaseModel):
         self.area_name: str = area_name
         self.requirement: str = requirement
 
-        try:
-            vacancy_data = {
-                "name": "Тестировщик",
-                "alternate_url": "https://api.hh.ru/areas/26",
-                salary_from: 1234,
-                salary_to: 34278,
-                "area_name": "QA Тестировщик",
-                requirement: "3+ лет опыта работы в области QA",
-            }
-            vacancy = Vacancy(**vacancy_data)
-            print("Валидация прошла успешно:", vacancy)
-
-            invalid_vacancy_data = {
-                "name": 123,
-                "alternate_url": 4465,
-                salary_from: "по результатам собесдоания",
-                salary_to: "по результатам собесдоания",
-                "area_name": 5464664,
-                requirement: 354446,
-            }
-            invalid_vacancy = Vacancy(**invalid_vacancy_data)
-        except ValidationError as e:
-            print("Ошибка валидации:", e)
-
     def __str__(self) -> str:
         """Строковое представление вакансии"""
 
@@ -64,17 +44,24 @@ class Vacancy(BaseModel):
 
         return self.salary_from < other.salary_from
 
+    @staticmethod
+    def __validate_salary(salary):
+        salary_from = salary.get("from") if salary.get("from") else 0
+        salary_to = salary.get("to") if salary.get("to") else 0
+        return (salary_from, salary_to)
+
     @classmethod
     def from_hh_dict(cls, vacancy_data: dict):
         """Метод возвращает экземпляр класса в виде списка"""
 
         salary = vacancy_data.get("salary")
 
+        salary_from, salary_to = cls.__validate_salary(salary)
         return cls(
             vacancy_data["name"],
             vacancy_data["alternate_url"],
-            salary.get("from") if salary.get("from") else 0,
-            salary.get("to") if salary.get("to") else 0,
+            salary_from,
+            salary_to,
             vacancy_data["area"]["name"],
             vacancy_data["snippet"]["requirement"],
         )

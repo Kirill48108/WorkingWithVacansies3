@@ -1,7 +1,6 @@
 import requests
 from requests import Response
 
-
 from src.get_vacancies import GetVacanciesAPI
 
 
@@ -18,6 +17,7 @@ class HeadHunterAPI(GetVacanciesAPI):
         self.__params["per_page"] = per_page
         request = requests.get(self.__url, params=self.__params)
         request.raise_for_status()
+        return request
 
     def get_vacancies(self, keyword: str, per_page: int):
         return self.get_response(keyword, per_page).json()["items"]
